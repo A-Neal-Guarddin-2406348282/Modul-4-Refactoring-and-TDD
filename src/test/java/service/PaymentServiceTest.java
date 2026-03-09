@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentServiceTest {
@@ -60,7 +61,7 @@ class PaymentServiceTest {
         Payment result = paymentService.addPayment(
                 order,
                 PaymentServiceImpl.VOUCHER_CODE,
-                Map.of("voucherCode", "ABC"),
+                Map.of("voucherCode", "ABC")
         );
 
         assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
