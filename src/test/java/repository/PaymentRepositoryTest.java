@@ -19,6 +19,7 @@ public class PaymentRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        // Sudah menggunakan enum
         paymentRepository = new PaymentRepository();
 
         Product product = new Product();
