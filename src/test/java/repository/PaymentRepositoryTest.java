@@ -20,7 +20,7 @@ public class PaymentRepositoryTest {
     @BeforeEach
     void setUp() {
         // Sudah menggunakan enum
-        paymentRepository = new PaymentRepository();
+        this.paymentRepository = new PaymentRepository();
 
         Product product = new Product();
         product.setProductId("product-1");
@@ -29,7 +29,7 @@ public class PaymentRepositoryTest {
 
         Order order = new Order("order-1", List.of(product), 1708560000L, "Safira");
 
-        payment1 = new Payment(
+        this.payment1 = new Payment(
                 "payment-1",
                 order,
                 "Voucher Code",
@@ -37,7 +37,7 @@ public class PaymentRepositoryTest {
                 Map.of("voucherCode", "ESHOP1234ABC5678")
         );
 
-        payment2 = new Payment(
+        this.payment2 = new Payment(
                 "payment-2",
                 order,
                 "Bank Transfer",
