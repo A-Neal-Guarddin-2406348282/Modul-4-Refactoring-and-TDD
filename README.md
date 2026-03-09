@@ -154,3 +154,93 @@ High-level module (service/controller) bergantung pada abstraksi:
 
 4. **Interface terlalu besar, jadinya membebani client (risiko melanggar ISP)**
   Jika semua kebutuhan digabung dalam satu interface besar, client yang cuma butuh 'findAll()' tetap "dipaksa tahu" method lain (create/update/delete). Ini yang ngebuat desain makin sulit dirawat.
+
+# Refleksi 5 (TDD & F.I.R.S.T.)
+
+## 1) Refleksi terhadap workflow TDD
+
+Menurut saya, workflow **Test-Driven Development (TDD)** yang saya jalankan pada tutorial ini **cukup berguna**, tetapi **belum sepenuhnya optimal**. TDD membantu saya membangun rasa aman saat melakukan perubahan kode, karena setelah menambah atau mengubah fitur, saya bisa segera melihat apakah perilaku lama masih berjalan dengan benar atau tidak. Hal ini terasa terutama pada pengujian di level **repository**, **service**, **controller**, dan **functional test**, karena setiap layer punya verifikasi yang berbeda.
+
+Dari exercise ini, saya merasakan beberapa manfaat utama dari TDD:
+
+- **Meningkatkan confidence saat refactor atau menambah fitur.**  
+  Saat ada perubahan pada alur `create`, `update`, `delete`, dan `find`, keberadaan test membuat saya tidak terlalu takut merusak behavior yang sudah benar.
+- **Membantu memecah masalah menjadi skenario kecil.**  
+  Saya jadi lebih terbiasa memikirkan input, proses, dan output yang diharapkan sebelum menulis implementasi.
+- **Membantu mendeteksi regression lebih cepat.**  
+  Jika ada perubahan yang tidak sengaja merusak fungsi yang lama, test akan lebih cepat memberi sinyal dibanding hanya mengandalkan pengecekan manual.
+
+Namun, setelah saya refleksikan, workflow saya **belum sepenuhnya “TDD murni”**. Dalam beberapa bagian, test terasa lebih seperti alat verifikasi setelah implementasi selesai, bukan benar-benar menjadi pemandu desain sejak awal. Contohnya, ada beberapa test yang lebih berorientasi pada **menutup branch coverage** atau memastikan implementasi tertentu terpanggil, bukan dimulai dari kebutuhan perilaku sistem yang paling penting. Jadi, walaupun saya sudah merasakan manfaat TDD, saya masih perlu meningkatkan konsistensi dalam menjalankan siklus **red -> green -> refactor**.
+
+Hal yang perlu saya lakukan pada pengerjaan berikutnya adalah:
+
+1. **Menulis failing test terlebih dahulu sebelum menulis implementasi.**  
+   Saya ingin lebih disiplin memulai dari test yang merepresentasikan requirement, lalu baru menulis kode minimum agar test lolos.
+
+2. **Fokus pada behavior, bukan detail implementasi.**  
+   Test sebaiknya memverifikasi apa yang seharusnya dilakukan sistem, bukan terlalu bergantung pada cara internal implementasinya.
+
+3. **Menambah test untuk edge case dan boundary case.**  
+   Misalnya:
+    - nama produk kosong,
+    - kuantitas nol atau negatif,
+    - product ID tidak ditemukan,
+    - status order tidak valid,
+    - update atau delete terhadap data yang tidak ada.
+
+4. **Membedakan tujuan unit test dan functional test dengan lebih jelas.**  
+   Unit test sebaiknya tetap menjadi alat utama untuk validasi logika bisnis secara cepat, sedangkan functional test cukup dipakai untuk alur penting end-to-end.
+
+5. **Melakukan refactor pada test code juga.**  
+   Jika nanti jumlah functional test bertambah, saya perlu mengurangi duplikasi setup dengan helper, base test class, atau pola seperti Page Object Model agar test tetap mudah dirawat.
+
+Secara keseluruhan, saya menilai bahwa TDD pada tutorial ini **sudah cukup membantu**, terutama untuk membangun confidence dan menjaga kualitas perubahan kode. Namun, ke depannya saya ingin memakai TDD bukan hanya sebagai alat pengecekan, tetapi juga sebagai alat untuk **mengarahkan desain dan perilaku program sejak awal**.
+
+---
+
+## 2) Refleksi terhadap prinsip F.I.R.S.T.
+
+Menurut saya, sebagian besar unit test yang saya buat **sudah cukup mengikuti prinsip F.I.R.S.T.**, tetapi masih ada beberapa bagian yang perlu diperbaiki.
+
+### **F - Fast**
+Sebagian besar **unit test** saya tergolong cepat, terutama test pada level model, repository, service, dan controller yang tidak membutuhkan proses berat. Test berbasis mock juga membantu eksekusi tetap ringan.
+
+Namun, **functional test** berbasis Selenium tentu lebih lambat dibanding unit test biasa karena melibatkan browser, rendering halaman, dan mekanisme wait. Jadi, untuk aspek **Fast**, saya bisa mengatakan bahwa **unit test sudah cukup baik**, tetapi functional test memang secara alami lebih berat.
+
+### **I - Independent**
+Sebagian besar test saya sudah cukup independen karena memakai `@BeforeEach`, mock object, dan data uji yang disiapkan ulang untuk setiap test. Ini membantu agar satu test tidak bergantung pada hasil test lain.
+
+Walaupun begitu, saya melihat masih ada ruang perbaikan, terutama pada **functional test** yang bergantung pada state aplikasi yang sedang berjalan. Memang saya sudah memakai data unik seperti `UUID`, tetapi pendekatan ini belum sebaik reset state secara eksplisit. Jadi, untuk prinsip **Independent**, saya menilai **cukup baik**, tetapi belum sempurna di semua layer.
+
+### **R - Repeatable**
+Sebagian besar test saya bisa dijalankan berulang kali dengan hasil yang konsisten, terutama test yang berbasis mock dan input deterministik.
+
+Tantangan ada pada functional test karena ia lebih sensitif terhadap:
+- environment browser,
+- timing,
+- redirect,
+- dan kondisi runtime aplikasi.
+
+Saya sudah menggunakan explicit wait agar test lebih stabil, tetapi tetap ada potensi flaky dibanding unit test biasa. Jadi, prinsip **Repeatable** sudah cukup terpenuhi pada unit test, tetapi masih perlu perhatian lebih pada functional test.
+
+### **S - Self-Validating**
+Menurut saya, test yang saya buat sudah cukup memenuhi prinsip ini karena hasil test ditentukan secara otomatis oleh assertion, bukan lewat pengecekan manual. Saya memakai `assertEquals`, `assertTrue`, `assertFalse`, `assertNull`, `assertNotNull`, dan `verify()` untuk memastikan hasilnya jelas: test pass atau fail.
+
+Namun, ke depannya saya ingin membuat assertion yang lebih kuat, bukan hanya memastikan method terpanggil, tetapi juga memastikan **perilaku bisnis** benar-benar sesuai requirement. Jadi, prinsip **Self-Validating** sudah berjalan dengan baik, tetapi masih bisa dibuat lebih tajam.
+
+### **T - Timely**
+Prinsip ini adalah bagian yang menurut saya masih paling perlu diperbaiki. Saya memang sudah membuat test untuk fitur-fitur yang dikerjakan, tetapi setelah refleksi, saya merasa belum selalu konsisten menulis test **sebelum** implementasi. Dalam beberapa kasus, test terasa ditambahkan setelah kode utama sudah terbentuk, atau setelah saya tahu branch mana yang ingin ditutup.
+
+Artinya, dari sisi **Timely**, saya belum selalu konsisten menjalankan semangat TDD sepenuhnya. Ke depannya, saya harus lebih disiplin menulis test dari requirement terlebih dahulu, lalu baru menulis implementasi minimum yang diperlukan.
+
+---
+
+## Kesimpulan
+
+Secara umum, saya menilai bahwa test yang saya buat **sudah cukup baik dan cukup membantu proses development**, terutama pada aspek validasi otomatis, keamanan saat refactor, dan pengurangan risiko regression. Untuk prinsip **F.I.R.S.T.**, test saya paling kuat pada aspek **Fast, Self-Validating,** dan sebagian **Independent**, tetapi masih perlu peningkatan pada aspek **Repeatable** untuk functional test, serta terutama pada aspek **Timely** agar lebih konsisten dengan praktik TDD yang sebenarnya.
+
+Jika saya membuat test lagi di masa depan, mungkin bisa saya usahakan untuk:
+- lebih disiplin menjalankan **red -> green -> refactor**,
+- lebih fokus pada **behavior-driven test**,
+- menambah **edge case** yang lebih realistis,
+- dan menjaga test tetap **ringkas, stabil, independen, dan mudah dirawat**.
