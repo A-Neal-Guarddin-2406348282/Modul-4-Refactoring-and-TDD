@@ -31,6 +31,7 @@ class PaymentTest {
         assertEquals("payment-1", payment.getId());
         assertEquals(order, payment.getOrder());
         assertEquals("Voucher Code", payment.getMethod());
+        // Sudah menggunakan enum
         assertEquals(OrderStatus.SUCCESS.getValue(), payment.getStatus());
         assertEquals("ESHOP1234ABC5678", payment.getPaymentData().get("voucherCode"));
     }
