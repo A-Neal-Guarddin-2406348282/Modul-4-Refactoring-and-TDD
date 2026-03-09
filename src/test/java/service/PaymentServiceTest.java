@@ -178,6 +178,7 @@ class PaymentServiceTest {
 
     @Test
     void testGetAllPayments() {
+        // Kasih enum
         Payment payment1 = new Payment(
                 "payment-1",
                 order,
