@@ -200,4 +200,40 @@ class PaymentServiceTest {
         List<Payment> results = paymentService.getAllPayments();
         assertEquals(2, results.size());
     }
+
+    @Test
+    void testAddPaymentBankTransferInvalidBecausePaymentDataNull() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                null
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentBankTransferInvalidBecauseBankNameBlank() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                Map.of("bankName", "   ", "referenceCode", "REF001")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentBankTransferInvalidBecauseReferenceCodeBlank() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                Map.of("bankName", "BCA", "referenceCode", "   ")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
 }
