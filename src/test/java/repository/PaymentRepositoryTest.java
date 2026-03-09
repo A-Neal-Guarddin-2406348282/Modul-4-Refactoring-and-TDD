@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.eshop.model.Product;
 import model.Order;
 import model.Payment;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public class PaymentRepositoryTest {
                 "payment-1",
                 order,
                 "Voucher Code",
-                "SUCCESS",
+                OrderStatus.SUCCESS.getValue(),
                 Map.of("voucherCode", "ESHOP1234ABC5678")
         );
 
@@ -39,7 +40,7 @@ public class PaymentRepositoryTest {
                 "payment-2",
                 order,
                 "Bank Transfer",
-                "REJECTED",
+                OrderStatus.FAILED.getValue(),
                 Map.of("bankName", "BCA", "referenceCode", "REF001")
         );
     }
