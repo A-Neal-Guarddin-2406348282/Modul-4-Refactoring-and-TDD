@@ -6,10 +6,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.PaymentService;
 
-// Implement ini setelah buat unit testingnya
 @Controller
 @RequestMapping("/payment")
 public class PaymentController {
+
+    private static final String PAYMENT_DETAIL_FORM_VIEW = "paymentDetailForm";
+    private static final String PAYMENT_DETAIL_VIEW = "paymentDetail";
+    private static final String PAYMENT_ADMIN_LIST_VIEW = "paymentAdminList";
+    private static final String PAYMENT_ADMIN_DETAIL_VIEW = "paymentAdminDetail";
+    private static final String REDIRECT_PAYMENT_DETAIL = "redirect:/payment/detail";
+    private static final String REDIRECT_PAYMENT_ADMIN_LIST = "redirect:/payment/admin/list";
+    private static final String REDIRECT_PAYMENT_ADMIN_DETAIL_PREFIX = "redirect:/payment/admin/detail/";
 
     private final PaymentService paymentService;
 
@@ -19,35 +26,35 @@ public class PaymentController {
 
     @GetMapping("/detail")
     public String paymentDetailFormPage() {
-        return "paymentDetailForm";
+        return PAYMENT_DETAIL_FORM_VIEW;
     }
 
     @GetMapping("/detail/{paymentId}")
     public String paymentDetailPage(@PathVariable("paymentId") String paymentId, Model model) {
         Payment payment = paymentService.getPayment(paymentId);
         if (payment == null) {
-            return "redirect:/payment/detail";
+            return REDIRECT_PAYMENT_DETAIL;
         }
 
         model.addAttribute("payment", payment);
-        return "paymentDetail";
+        return PAYMENT_DETAIL_VIEW;
     }
 
     @GetMapping("/admin/list")
     public String paymentAdminListPage(Model model) {
         model.addAttribute("payments", paymentService.getAllPayments());
-        return "paymentAdminList";
+        return PAYMENT_ADMIN_LIST_VIEW;
     }
 
     @GetMapping("/admin/detail/{paymentId}")
     public String paymentAdminDetailPage(@PathVariable("paymentId") String paymentId, Model model) {
         Payment payment = paymentService.getPayment(paymentId);
         if (payment == null) {
-            return "redirect:/payment/admin/list";
+            return REDIRECT_PAYMENT_ADMIN_LIST;
         }
 
         model.addAttribute("payment", payment);
-        return "paymentAdminDetail";
+        return PAYMENT_ADMIN_DETAIL_VIEW;
     }
 
     @PostMapping("/admin/set-status/{paymentId}")
@@ -55,10 +62,10 @@ public class PaymentController {
                                         @RequestParam("status") String status) {
         Payment payment = paymentService.getPayment(paymentId);
         if (payment == null) {
-            return "redirect:/payment/admin/list";
+            return REDIRECT_PAYMENT_ADMIN_LIST;
         }
 
         paymentService.setStatus(payment, status);
-        return "redirect:/payment/admin/detail/" + paymentId;
+        return REDIRECT_PAYMENT_ADMIN_DETAIL_PREFIX + paymentId;
     }
 }
