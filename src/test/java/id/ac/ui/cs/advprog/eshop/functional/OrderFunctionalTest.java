@@ -49,6 +49,5 @@ class OrderFunctionalTest {
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         assertTrue(driver.getPageSource().contains(author));
-
     }
 }

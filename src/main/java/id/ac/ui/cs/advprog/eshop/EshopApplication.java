@@ -4,7 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "id.ac.ui.cs.advprog.eshop",
+        "model",
+        "repository",
+        "service",
+        "enums"
+})
 public class EshopApplication {
 
     public static void main(String[] args) {
