@@ -352,7 +352,7 @@ class PaymentServiceTest {
         Payment result = paymentService.addPayment(
                 order,
                 PaymentServiceImpl.VOUCHER_CODE,
-                Map.of("voucherCode", "ESHOP12ABCD34EFGH")
+                Map.of("voucherCode", "ESHOP12AB34CD567")
         );
 
         assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
