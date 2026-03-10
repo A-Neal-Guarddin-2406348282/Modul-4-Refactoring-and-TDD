@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.eshop;
 
 import id.ac.ui.cs.advprog.eshop.controller.PaymentController;
+import id.ac.ui.cs.advprog.eshop.model.Product;
 import model.Order;
 import model.Payment;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,11 +35,12 @@ class PaymentControllerTest {
 
     @BeforeEach
     void setUp() {
-        Order order = new Order("order-1",
-                List.of(new id.ac.ui.cs.advprog.eshop.model.Product()),
-                System.currentTimeMillis(),
-                "Neal");
+        Product product = new Product();
+        product.setProductId("product-1");
+        product.setProductName("Keyboard");
+        product.setProductQuantity(2);
 
+        Order order = new Order("order-1", List.of(product), System.currentTimeMillis(), "Neal");
         payment = new Payment(
                 "payment-1",
                 order,
@@ -113,5 +115,27 @@ class PaymentControllerTest {
                 .andExpect(view().name("redirect:/payment/admin/detail/payment-1"));
 
         verify(paymentService).setStatus(payment, PaymentServiceImpl.SUCCESS);
+    }
+
+    @Test
+    void testPaymentAdminSetStatusRejected() throws Exception {
+        when(paymentService.getPayment("payment-1")).thenReturn(payment);
+
+        mockMvc.perform(post("/payment/admin/set-status/payment-1")
+                        .param("status", PaymentServiceImpl.REJECTED))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/payment/admin/detail/payment-1"));
+
+        verify(paymentService).setStatus(payment, PaymentServiceImpl.REJECTED);
+    }
+
+    @Test
+    void testPaymentAdminSetStatusPaymentNotFound() throws Exception {
+        when(paymentService.getPayment("missing")).thenReturn(null);
+
+        mockMvc.perform(post("/payment/admin/set-status/missing")
+                        .param("status", PaymentServiceImpl.SUCCESS))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/payment/admin/list"));
     }
 }
