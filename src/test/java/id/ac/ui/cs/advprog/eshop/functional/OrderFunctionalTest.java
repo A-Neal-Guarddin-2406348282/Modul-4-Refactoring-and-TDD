@@ -18,6 +18,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ExtendWith(SeleniumJupiter.class)
 class OrderFunctionalTest {
+
     @LocalServerPort
     private int serverPort;
 
