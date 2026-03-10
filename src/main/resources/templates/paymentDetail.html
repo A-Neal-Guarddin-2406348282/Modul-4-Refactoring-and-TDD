@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Payment Detail')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Payment Detail</h3>
+            <p><strong>Payment ID:</strong> <span id="paymentIdText" th:text="${payment.id}"></span></p>
+            <p><strong>Method:</strong> <span th:text="${payment.method}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${payment.status}"></span></p>
+            <p><strong>Order ID:</strong> <span th:text="${payment.order.id}"></span></p>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>

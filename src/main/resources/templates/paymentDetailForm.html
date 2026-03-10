@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Payment Detail')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Find Payment Detail</h3>
+
+            <form onsubmit="event.preventDefault(); window.location='/payment/detail/' + document.getElementById('paymentIdInput').value;">
+                <div class="mb-3">
+                    <label for="paymentIdInput" class="form-label">Payment ID</label>
+                    <input id="paymentIdInput" type="text" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Payment Admin Detail')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Manage Payment</h3>
+
+            <p><strong>Payment ID:</strong> <span th:text="${payment.id}"></span></p>
+            <p><strong>Method:</strong> <span th:text="${payment.method}"></span></p>
+            <p><strong>Status:</strong> <span id="adminPaymentStatusText" th:text="${payment.status}"></span></p>
+
+            <div class="d-flex gap-2">
+                <form th:action="@{/payment/admin/set-status/{id}(id=${payment.id})}" method="post">
+                    <input type="hidden" name="status" value="SUCCESS">
+                    <button id="acceptPaymentButton" type="submit" class="btn btn-success">Accept</button>
+                </form>
+
+                <form th:action="@{/payment/admin/set-status/{id}(id=${payment.id})}" method="post">
+                    <input type="hidden" name="status" value="REJECTED">
+                    <button id="rejectPaymentButton" type="submit" class="btn btn-danger">Reject</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>

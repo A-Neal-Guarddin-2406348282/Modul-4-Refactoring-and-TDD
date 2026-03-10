@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+// Class ini sudah disesuaikan dengan refactoring
 @Controller
 @RequestMapping("/order")
 public class OrderController {

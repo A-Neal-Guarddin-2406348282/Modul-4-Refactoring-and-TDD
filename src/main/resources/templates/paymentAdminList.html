@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Payment Admin List')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">All Payments</h3>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Payment ID</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="payment : ${payments}">
+                    <td th:text="${payment.id}"></td>
+                    <td th:text="${payment.method}"></td>
+                    <td th:text="${payment.status}"></td>
+                    <td>
+                        <a class="btn btn-sm btn-outline-primary"
+                           th:href="@{/payment/admin/detail/{id}(id=${payment.id})}">
+                            Manage
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>
