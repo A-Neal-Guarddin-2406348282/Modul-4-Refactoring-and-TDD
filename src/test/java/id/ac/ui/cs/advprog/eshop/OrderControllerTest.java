@@ -24,6 +24,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.mockito.ArgumentCaptor;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @WebMvcTest(OrderController.class)
 class OrderControllerTest {
@@ -161,5 +163,49 @@ class OrderControllerTest {
                         .param("voucherCode", "ESHOP1234ABC5678"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/order/history"));
+    }
+
+    @Test
+    void testPayOrderPostVoucherWithoutVoucherCodeUsesEmptyString() throws Exception {
+        when(orderService.findById("order-1")).thenReturn(order);
+        when(paymentService.addPayment(eq(order), eq(PaymentServiceImpl.VOUCHER_CODE), any(Map.class)))
+                .thenReturn(payment);
+
+        mockMvc.perform(post("/order/pay/order-1")
+                        .param("method", PaymentServiceImpl.VOUCHER_CODE))
+                .andExpect(status().isOk())
+                .andExpect(view().name("paymentResult"));
+
+        ArgumentCaptor<Map<String, String>> paymentDataCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(paymentService).addPayment(eq(order), eq(PaymentServiceImpl.VOUCHER_CODE), paymentDataCaptor.capture());
+
+        assertEquals("", paymentDataCaptor.getValue().get("voucherCode"));
+    }
+
+    @Test
+    void testPayOrderPostBankTransferWithoutReferenceCodeUsesEmptyString() throws Exception {
+        Payment bankPayment = new Payment(
+                "payment-2",
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                PaymentServiceImpl.REJECTED,
+                Map.of("bankName", "BCA", "referenceCode", "")
+        );
+
+        when(orderService.findById("order-1")).thenReturn(order);
+        when(paymentService.addPayment(eq(order), eq(PaymentServiceImpl.BANK_TRANSFER), any(Map.class)))
+                .thenReturn(bankPayment);
+
+        mockMvc.perform(post("/order/pay/order-1")
+                        .param("method", PaymentServiceImpl.BANK_TRANSFER)
+                        .param("bankName", "BCA"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("paymentResult"));
+
+        ArgumentCaptor<Map<String, String>> paymentDataCaptor = ArgumentCaptor.forClass(Map.class);
+        verify(paymentService).addPayment(eq(order), eq(PaymentServiceImpl.BANK_TRANSFER), paymentDataCaptor.capture());
+
+        assertEquals("BCA", paymentDataCaptor.getValue().get("bankName"));
+        assertEquals("", paymentDataCaptor.getValue().get("referenceCode"));
     }
 }
