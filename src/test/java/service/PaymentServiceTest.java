@@ -241,42 +241,6 @@ class PaymentServiceTest {
     }
 
     @Test
-    void testAddPaymentVoucherInvalidBecausePaymentDataNull() {
-        Payment result = paymentService.addPayment(
-                order,
-                PaymentServiceImpl.VOUCHER_CODE,
-                null
-        );
-
-        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
-        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
-    }
-
-    @Test
-    void testAddPaymentVoucherInvalidBecausePrefixWrong() {
-        Payment result = paymentService.addPayment(
-                order,
-                PaymentServiceImpl.VOUCHER_CODE,
-                Map.of("voucherCode", "XSHOP1234ABC5678")
-        );
-
-        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
-        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
-    }
-
-    @Test
-    void testAddPaymentVoucherInvalidBecauseDigitCountWrong() {
-        Payment result = paymentService.addPayment(
-                order,
-                PaymentServiceImpl.VOUCHER_CODE,
-                Map.of("voucherCode", "ESHOP12ABCD34EFGH")
-        );
-
-        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
-        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
-    }
-
-    @Test
     void testAddPaymentUnknownMethodDefaultsRejected() {
         Payment result = paymentService.addPayment(
                 order,
@@ -353,5 +317,47 @@ class PaymentServiceTest {
 
         assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
         assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecausePaymentDataNull() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                null
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+        verify(paymentRepository).save(result);
+        verify(orderRepository).save(order);
+    }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecausePrefixWrong() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                Map.of("voucherCode", "XSHOP1234ABC5678")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+        verify(paymentRepository).save(result);
+        verify(orderRepository).save(order);
+    }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecauseDigitCountWrong() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                Map.of("voucherCode", "ESHOP12ABCD34EFGH")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+        verify(paymentRepository).save(result);
+        verify(orderRepository).save(order);
     }
 }
