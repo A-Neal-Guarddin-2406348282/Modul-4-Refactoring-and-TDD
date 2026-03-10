@@ -136,4 +136,38 @@ class CarRepositoryTest {
 
         assertNotNull(carRepository.findById("car-1"));
     }
+
+    @Test
+    void testUpdateIfFoundAfterSkippingFirstCar() {
+        carRepository.create(car1);
+        carRepository.create(car2);
+
+        Car updatedCar = new Car();
+        updatedCar.setCarName("Updated Civic");
+        updatedCar.setCarColor("Silver");
+        updatedCar.setCarQuantity(7);
+
+        Car result = carRepository.update("car-2", updatedCar);
+
+        assertNotNull(result);
+        assertEquals("car-2", result.getCarId());
+        assertEquals("Updated Civic", result.getCarName());
+        assertEquals("Silver", result.getCarColor());
+        assertEquals(7, result.getCarQuantity());
+    }
+
+    @Test
+    void testUpdateIfNotFoundReturnsNull() {
+        carRepository.create(car1);
+        carRepository.create(car2);
+
+        Car updatedCar = new Car();
+        updatedCar.setCarName("Not Found Car");
+        updatedCar.setCarColor("Green");
+        updatedCar.setCarQuantity(10);
+
+        Car result = carRepository.update("missing-id", updatedCar);
+
+        assertNull(result);
+    }
 }
