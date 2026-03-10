@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Pay Order')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Pay Order</h3>
+
+            <p><strong>Order ID:</strong> <span id="orderIdText" th:text="${order.id}"></span></p>
+            <p><strong>Author:</strong> <span th:text="${order.author}"></span></p>
+            <p><strong>Status:</strong> <span th:text="${order.status}"></span></p>
+
+            <form th:action="@{/order/pay/{id}(id=${order.id})}" method="post" class="row g-3">
+                <div class="col-12 col-md-4">
+                    <label for="paymentMethodInput" class="form-label">Payment Method</label>
+                    <select id="paymentMethodInput" name="method" class="form-select">
+                        <option value="Voucher Code">Voucher Code</option>
+                        <option value="Bank Transfer">Bank Transfer</option>
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="voucherCodeInput" class="form-label">Voucher Code</label>
+                    <input id="voucherCodeInput" name="voucherCode" type="text" class="form-control">
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="bankNameInput" class="form-label">Bank Name</label>
+                    <input id="bankNameInput" name="bankName" type="text" class="form-control">
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="referenceCodeInput" class="form-label">Reference Code</label>
+                    <input id="referenceCodeInput" name="referenceCode" type="text" class="form-control">
+                </div>
+
+                <div class="col-12">
+                    <button id="submitPaymentButton" type="submit" class="btn btn-primary">Submit Payment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>
