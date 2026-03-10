@@ -60,6 +60,7 @@ tasks.test {
     useJUnitPlatform()
 
     filter {
+    // Comment FunctionalTest jika ingin menyalakan FunctionalTest
         excludeTestsMatching("*FunctionalTest")
     }
 
