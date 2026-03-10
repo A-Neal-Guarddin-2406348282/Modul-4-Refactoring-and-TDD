@@ -35,6 +35,7 @@ public class PaymentServiceImpl implements PaymentService {
                 paymentData
         );
 
+        // Voucher Payment Implementation
         if (VOUCHER_CODE.equals(method)) {
             String voucherCode = paymentData == null ? null : paymentData.get("voucherCode");
             if (isVoucherValid(voucherCode)) {
@@ -87,6 +88,7 @@ public class PaymentServiceImpl implements PaymentService {
         orderRepository.save(payment.getOrder());
     }
 
+    // Refactoring isVoucherValid()
     private boolean isVoucherValid(String voucherCode) {
         if (voucherCode == null) {
             return false;
@@ -104,6 +106,7 @@ public class PaymentServiceImpl implements PaymentService {
         return digitCount == 8;
     }
 
+    // Payment validation berhasil
     private boolean isBankTransferValid(Map<String, String> paymentData) {
         if (paymentData == null) {
             return false;
