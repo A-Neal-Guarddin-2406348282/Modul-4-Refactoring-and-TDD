@@ -47,7 +47,7 @@ public class OrderController {
                 author
         );
 
-        orderService.createOrder(order);
+        this.orderService.createOrder(order);
         return "redirect:/order/pay/" + order.getId();
     }
 
@@ -59,13 +59,13 @@ public class OrderController {
     @PostMapping("/history")
     public String orderHistoryPost(@RequestParam("author") String author, Model model) {
         model.addAttribute("author", author);
-        model.addAttribute("orders", orderService.findAllByAuthor(author));
+        model.addAttribute("orders", this.orderService.findAllByAuthor(author));
         return "orderHistory";
     }
 
     @GetMapping("/pay/{orderId}")
     public String payOrderPage(@PathVariable("orderId") String orderId, Model model) {
-        Order order = orderService.findById(orderId);
+        Order order = this.orderService.findById(orderId);
         if (order == null) {
             return "redirect:/order/history";
         }
@@ -81,7 +81,7 @@ public class OrderController {
                                @RequestParam(value = "bankName", required = false) String bankName,
                                @RequestParam(value = "referenceCode", required = false) String referenceCode,
                                Model model) {
-        Order order = orderService.findById(orderId);
+        Order order = this.orderService.findById(orderId);
         if (order == null) {
             return "redirect:/order/history";
         }

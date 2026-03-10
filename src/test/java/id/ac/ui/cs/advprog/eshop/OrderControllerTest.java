@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.eshop;
 
+import id.ac.ui.cs.advprog.eshop.controller.OrderController;
 import model.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -45,7 +46,7 @@ class OrderControllerTest {
                     .param("productName", "Keyboard")
                     .param("productQuantity", "2"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name(org.hamcrest.Matchers.startsWith("redirec:/order/pay/")));
+                .andExpect(view().name(org.hamcrest.Matchers.startsWith("redirect:/order/pay/")));
 
         verify(orderService).createOrder(any(Order.class));
     }
