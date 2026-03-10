@@ -8,6 +8,7 @@ import java.util.Iterator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// FINAL
 class CarRepositoryTest {
 
     private CarRepository carRepository;
