@@ -6,6 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import service.PaymentService;
 
+// Implement ini setelah buat unit testingnya
 @Controller
 @RequestMapping("/payment")
 public class PaymentController {
