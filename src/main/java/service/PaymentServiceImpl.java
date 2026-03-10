@@ -107,7 +107,7 @@ public class PaymentServiceImpl implements PaymentService {
         return digitCount == 8;
     }
 
-    // Payment validation berhasil
+    // Payment validation berhasil. Untuk refactoring dan memisahkan apakah ini bank transfer atau bukan
     private boolean isBankTransferValid(Map<String, String> paymentData) {
         if (paymentData == null) {
             return false;
