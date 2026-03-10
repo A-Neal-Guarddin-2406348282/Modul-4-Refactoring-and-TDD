@@ -93,6 +93,7 @@ public class OrderController {
         return PAYMENT_RESULT_VIEW;
     }
 
+    // Helper buildOrder() refactor
     private Order buildOrder(String author, String productName, int productQuantity) {
         Product product = new Product();
         product.setProductId(UUID.randomUUID().toString());
@@ -107,7 +108,7 @@ public class OrderController {
         );
     }
 
-
+    // Helper buildPaymentData() refactor
     private Map<String, String> buildPaymentData(String method, String voucherCode, String bankName, String referenceCode) {
         if (PaymentServiceImpl.VOUCHER_CODE.equals(method)) {
             return Map.of("voucherCode", defaultValue(voucherCode));
@@ -119,6 +120,7 @@ public class OrderController {
 
     }
 
+    // Checking default value
     private String defaultValue(String value) {
         return value == null ? "" : value;
     }
