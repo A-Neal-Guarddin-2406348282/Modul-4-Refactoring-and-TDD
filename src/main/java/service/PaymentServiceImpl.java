@@ -41,6 +41,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (isVoucherValid(voucherCode)) {
                 payment.setStatus(SUCCESS);
             }
+        // Kalo methodnya "Bank Transfer", maka set jadi valid
         } else if (BANK_TRANSFER.equals(method)) {
             if (isBankTransferValid(paymentData)) {
                 payment.setStatus(SUCCESS);
