@@ -239,4 +239,119 @@ class PaymentServiceTest {
         assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
         assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
     }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecausePaymentDataNull() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                null
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecausePrefixWrong() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                Map.of("voucherCode", "XSHOP1234ABC5678")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentVoucherInvalidBecauseDigitCountWrong() {
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                Map.of("voucherCode", "ESHOP12ABCD34EFGH")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentUnknownMethodDefaultsRejected() {
+        Payment result = paymentService.addPayment(
+                order,
+                "Cash on Delivery",
+                Map.of("address", "UI")
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testSetStatusWhenOrderNull() {
+        Payment payment = new Payment(
+                "payment-1",
+                null,
+                PaymentServiceImpl.VOUCHER_CODE,
+                PaymentServiceImpl.REJECTED,
+                Map.of("voucherCode", "ABC")
+        );
+
+        Payment result = paymentService.setStatus(payment, PaymentServiceImpl.SUCCESS);
+
+        assertEquals(PaymentServiceImpl.SUCCESS, result.getStatus());
+        verify(orderRepository, never()).save(any());
+        verify(paymentRepository).save(payment);
+    }
+
+    @Test
+    void testSetStatusWithUnknownStatusDoesNotChangeOrderStatus() {
+        Payment payment = new Payment(
+                "payment-1",
+                order,
+                PaymentServiceImpl.VOUCHER_CODE,
+                PaymentServiceImpl.REJECTED,
+                Map.of("voucherCode", "ABC")
+        );
+
+        String initialOrderStatus = order.getStatus();
+
+        Payment result = paymentService.setStatus(payment, "PENDING");
+
+        assertEquals("PENDING", result.getStatus());
+        assertEquals(initialOrderStatus, order.getStatus());
+        verify(orderRepository).save(order);
+        verify(paymentRepository).save(payment);
+    }
+
+    @Test
+    void testAddPaymentBankTransferInvalidBecauseBankNameMissingKey() {
+        Map<String, String> paymentData = new java.util.HashMap<>();
+        paymentData.put("referenceCode", "REF001");
+
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                paymentData
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
+
+    @Test
+    void testAddPaymentBankTransferInvalidBecauseReferenceCodeMissingKey() {
+        Map<String, String> paymentData = new java.util.HashMap<>();
+        paymentData.put("bankName", "BCA");
+
+        Payment result = paymentService.addPayment(
+                order,
+                PaymentServiceImpl.BANK_TRANSFER,
+                paymentData
+        );
+
+        assertEquals(PaymentServiceImpl.REJECTED, result.getStatus());
+        assertEquals(OrderStatus.FAILED.getValue(), order.getStatus());
+    }
 }
