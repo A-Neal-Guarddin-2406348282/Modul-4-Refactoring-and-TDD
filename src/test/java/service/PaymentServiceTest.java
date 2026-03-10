@@ -72,6 +72,7 @@ class PaymentServiceTest {
         verify(orderRepository).save(order);
     }
 
+    // Test untuk Bank Transfer Payment disini
     @Test
     void testAddPaymentBankTransferValid() {
         Payment result = paymentService.addPayment(
