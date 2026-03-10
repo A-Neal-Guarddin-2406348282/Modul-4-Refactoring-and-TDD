@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Create Order')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Create Order</h3>
+
+            <form th:action="@{/order/create}" method="post" class="row g-3">
+                <div class="col-12 col-md-4">
+                    <label for="authorInput" class="form-label">Author</label>
+                    <input id="authorInput" name="author" type="text" class="form-control" required>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="productNameInput" class="form-label">Product Name</label>
+                    <input id="productNameInput" name="productName" type="text" class="form-control" required>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="productQuantityInput" class="form-label">Product Quantity</label>
+                    <input id="productQuantityInput" name="productQuantity" type="number" min="1" class="form-control" required>
+                </div>
+
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Create Order</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>

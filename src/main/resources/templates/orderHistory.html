@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/layout :: head('Order History')"></head>
+<body>
+<div th:replace="fragments/layout :: navbar"></div>
+
+<div class="container my-4">
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <h3 class="mb-3">Order History</h3>
+
+            <form th:action="@{/order/history}" method="post" class="row g-3">
+                <div class="col-12 col-md-8">
+                    <label for="historyAuthorInput" class="form-label">Author</label>
+                    <input id="historyAuthorInput" name="author" type="text" class="form-control" required>
+                </div>
+                <div class="col-12 col-md-4 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card" th:if="${orders != null}">
+        <div class="card-body p-4">
+            <h5 class="mb-3" th:text="'Orders by ' + ${author}">Orders</h5>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Author</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}"></td>
+                        <td th:text="${order.author}"></td>
+                        <td th:text="${order.status}"></td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary"
+                               th:href="@{/order/pay/{id}(id=${order.id})}">
+                                Pay
+                            </a>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="4" class="text-center text-muted">No orders found.</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/layout :: scripts"></div>
+</body>
+</html>
